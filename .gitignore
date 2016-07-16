@@ -1,4 +1,4 @@
-﻿ThreeOldFloor.CommonLib/bin/Debug/NPinyin.dll
+ThreeOldFloor.CommonLib/bin/Debug/NPinyin.dll
 ThreeOldFloor.CommonLib/bin/Debug/Newtonsoft.Json.dll
 ThreeOldFloor.CommonLib/bin/Debug/Newtonsoft.Json.xml
 ThreeOldFloor.CommonLib/bin/Debug/ThreeOldFloor.CommonLib.dll
@@ -362,3 +362,5 @@ ThreeOldFloorApplication/obj/Debug/ThreeOldFloor.Application.csproj.FileListAbso
 ThreeOldFloorApplication/obj/Debug/ThreeOldFloor.Application.csprojResolveAssemblyReference.cache
 ThreeOldFloorApplication/obj/Debug/ThreeOldFloorApplication.dll
 ThreeOldFloorApplication/obj/Debug/ThreeOldFloorApplication.pdb
+ThreeOldFloor.CommonLib/obj/Debug/ThreeOldFloor.CommonLib.csprojResolveAssemblyReference.cache
+ThreeOldFloor.Core/obj/Debug/ThreeOldFloor.Core.csprojResolveAssemblyReference.cache
