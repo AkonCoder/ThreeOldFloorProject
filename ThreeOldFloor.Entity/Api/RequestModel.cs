@@ -26,17 +26,12 @@
         public string Nonce { get; set; }
 
         /// <summary>
-        /// 店铺ID
-        /// </summary>
-        public string AccId { get; set; }
-
-        /// <summary>
         /// 登录用户Id
         /// </summary>
         public int UserId { get; set; }
 
         /// <summary>
-        /// 店铺令牌Token
+        /// Token
         /// </summary>
         public string Token { get; set; }
     }
