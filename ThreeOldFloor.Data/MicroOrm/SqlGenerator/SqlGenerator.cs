@@ -418,7 +418,8 @@ namespace ThreeOldFloor.Data.MicroOrm.SqlGenerator
         {
             if (body.NodeType != ExpressionType.AndAlso && body.NodeType != ExpressionType.OrElse)
             {
-                string propertyName = ExpressionHelper.GetPropertyName(body);
+                //string propertyName = ExpressionHelper.GetPropertyName(body);
+                string propertyName = ExpressionHelper.GetColumnName(body);
                 object propertyValue = ExpressionHelper.GetValue(body.Right);
                 string opr = ExpressionHelper.GetSqlOperator(body.NodeType);
                 string link = ExpressionHelper.GetSqlOperator(linkingType);

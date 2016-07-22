@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using ThreeOldFloor.Data.MicroOrm.Extensions;
@@ -23,6 +25,21 @@ namespace ThreeOldFloor.Data.MicroOrm.SqlGenerator
             }
 
             return propertyName;
+        }
+
+        public static string GetColumnName(BinaryExpression body)
+        {
+            var member = body.Left as MemberExpression;
+            if (member != null)
+            {
+                var columnAttrs = member.Member.GetCustomAttributes<ColumnAttribute>();
+                if (columnAttrs != null && columnAttrs.Any())
+                {
+                    return columnAttrs.FirstOrDefault().Name;
+                }
+            }
+
+            return GetPropertyName(body);
         }
 
         public static string GetPropertyName<TSource, TField>(Expression<Func<TSource, TField>> field)

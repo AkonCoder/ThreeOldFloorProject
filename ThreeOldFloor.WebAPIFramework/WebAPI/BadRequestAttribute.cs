@@ -22,6 +22,10 @@ namespace ThreeOldFloor.WebAPIFramework.WebAPI
                 {
                     actionExecutedContext.Response.StatusCode = HttpStatusCode.BadRequest;
                 }
+                if (responseModel.Code == (int)ResponseErrorcode.C404)
+                {
+                    actionExecutedContext.Response.StatusCode = HttpStatusCode.NotFound;
+                }
             }
 
             base.OnActionExecuted(actionExecutedContext);
