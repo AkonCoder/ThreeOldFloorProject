@@ -182,6 +182,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\ObjectGenerator.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
+    <Compile Include="Controllers\BaseApiController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserInfoController.cs" />
     <Compile Include="Global.asax.cs">
@@ -252,6 +253,10 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ThreeOldFloor.Entity\ThreeOldFloor.Entity.csproj">
+      <Project>{06D47FD3-C21A-443A-9A26-4E5761D330A6}</Project>
+      <Name>ThreeOldFloor.Entity</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ThreeOldFloor.WebAPIFramework\ThreeOldFloor.WebAPIFramework.csproj">
       <Project>{AE156BFC-96CA-4141-ADE9-2CC8BE461AE5}</Project>
       <Name>ThreeOldFloor.WebAPIFramework</Name>
