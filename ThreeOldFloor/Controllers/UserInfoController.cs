@@ -7,7 +7,7 @@ namespace ThreeOldFloor.Controllers
     /// 用户信息相关接口
     /// </summary>
     [RoutePrefix("v0")]
-    public class UserInfoController : BaseApiController
+    public class UserInfoController 
     {
         /// <summary>
         /// 获取所有用户列表
