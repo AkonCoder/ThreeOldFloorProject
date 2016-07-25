@@ -7,7 +7,7 @@ namespace ThreeOldFloor.Controllers
     /// 用户信息相关接口
     /// </summary>
     [RoutePrefix("v0")]
-    public class UserInfoController 
+    public class UserInfoController
     {
         /// <summary>
         /// 获取所有用户列表
@@ -38,8 +38,18 @@ namespace ThreeOldFloor.Controllers
         /// <returns></returns>
         [Route("users")]
         [HttpPost, HttpOptions]
-        public ResponseModel AddUser()
+        public ResponseModel AddUser(User user)
         {
+            if (user == null)
+            {
+                return new ResponseModel
+                {
+                    Code = 0,
+                    Message = "参数错误",
+                    Data = null
+                };
+
+            }
             return new ResponseModel();
         }
 
