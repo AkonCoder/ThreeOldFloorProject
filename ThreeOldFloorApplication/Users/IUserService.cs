@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ThreeOldFloor.Entity.Api;
 
 namespace ThreeOldFloorApplication.Users
 {
@@ -11,16 +7,38 @@ namespace ThreeOldFloorApplication.Users
     /// </summary>
     public interface IUserService
     {
+        /// <summary>
+        ///获取用户列表
+        /// </summary>
+        /// <returns></returns>
+        ResponseModel GetUsers();
 
-        public ResponeModel GetUsers(Users user);
+        /// <summary>
+        /// 新增用户
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        ResponseModel AddUser(User user);
 
-        public ResponeModel AddUser(Users user);
+        /// <summary>
+        /// 编辑用户
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        ResponseModel EditUser(User user);
 
-        public ResponeModel EditUser(Users user);
+        /// <summary>
+        /// 删除用户
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        ResponseModel DeleteUser(User user);
 
-        public ResponeModel DeleteUser(Users user);
-
-        public ResponseModel GetUseInfoById(int id);
-
+        /// <summary>
+        /// 根据id获取用户详细信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        ResponseModel GetUseInfoById(int id);
     }
 }

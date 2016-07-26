@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ThreeOldFloor.Entity.Api;
 
 namespace ThreeOldFloorApplication.Users
 {
@@ -11,6 +8,29 @@ namespace ThreeOldFloorApplication.Users
     /// </summary>
     public class UserService : IUserService
     {
+        public ResponseModel GetUsers()
+        {
+            throw new NotImplementedException();
+        }
 
+        public ResponseModel AddUser(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ResponseModel EditUser(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ResponseModel DeleteUser(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ResponseModel GetUseInfoById(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
