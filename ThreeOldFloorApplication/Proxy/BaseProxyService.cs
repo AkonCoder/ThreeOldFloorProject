@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using Newtonsoft.Json;
 using ThreeOldFloor.CommonLib;
 using ThreeOldFloor.Core;
 using ThreeOldFloor.Entity.Api;
@@ -20,8 +21,9 @@ namespace ThreeOldFloorApplication.Proxy
         protected readonly ILogger Logger = new NLogger();
 
 
-        private ResponseModel ExecuteWithTryCatch(Func<HttpClient, HttpResponseMessage> func, string httpMethod,
-            string url, object requestBody, UserContext userContext, Dictionary<string, string> headers)
+        private ResponseSerializationModel<T> ExecuteWithTryCatch<T>(Func<HttpClient, HttpResponseMessage> func,
+            string httpMethod,
+            string url, object requestBody, UserContext userContext, Dictionary<string, string> headers) where T : class
         {
             using (var client = new HttpClient())
             {
@@ -45,7 +47,6 @@ namespace ThreeOldFloorApplication.Proxy
 
                 response = func(client);
 
-                //日志捕捉先注释（add by liupeng20160715）
                 // try
                 // {
                 //     requestLog.Headers = BuildHeaderString(headers);
@@ -76,25 +77,25 @@ namespace ThreeOldFloorApplication.Proxy
                 //     });
                 // }
 
-
-                ResponseModel responseModel = null;
+                ResponseSerializationModel<T> responseModel;
                 if (response.IsSuccessStatusCode)
                 {
                     var strResult = response.Content.ReadAsStringAsync().Result;
-                    responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel>(strResult);
+                    responseModel =
+                        JsonConvert.DeserializeObject(strResult, typeof(ResponseSerializationModel<T>)) as
+                            ResponseSerializationModel<T>;
                 }
                 else
                 {
                     // 远程请求返回失败
-                    var requestException = new ThreeOldFloorException((int) response.StatusCode,
+                    var requestException = new ThreeOldFloorHttpRequestException((int)response.StatusCode,
                         "远程请求失败" + response.Content.ReadAsStringAsync().Result);
                     throw requestException;
                 }
 
-
-                if (responseModel != null && responseModel.Code != (int) ResponseErrorcode.C200)
+                if (responseModel != null && responseModel.Code != (int)ResponseErrorcode.C200)
                 {
-                    var requestException = new ThreeOldFloorException((int) responseModel.Code,
+                    var requestException = new ThreeOldFloorHttpRequestException((int)responseModel.Code,
                         "远程处理失败" + responseModel.Message);
                     throw requestException;
                 }
@@ -103,28 +104,31 @@ namespace ThreeOldFloorApplication.Proxy
             }
         }
 
-        protected ResponseModel RestPost<T>(string url, UserContext userContext, T request,
-            Dictionary<string, string> headers)
+        protected ResponseSerializationModel<T> RestPost<T, TEntity>(string url, UserContext userContext,
+            TEntity request,
+            Dictionary<string, string> headers) where T : class
         {
-            return ExecuteWithTryCatch(client => client.PostAsJsonAsync(url, request).Result, "post", url, request,
+            return ExecuteWithTryCatch<T>(client => client.PostAsJsonAsync(url, request).Result, "post", url, request,
                 userContext, headers);
         }
 
-        protected ResponseModel RestPut<T>(string url, UserContext userContext, T request,
-            Dictionary<string, string> headers)
+        protected ResponseSerializationModel<T> RestPut<T, TEntity>(string url, UserContext userContext, TEntity request,
+            Dictionary<string, string> headers) where T : class
         {
-            return ExecuteWithTryCatch(client => client.PutAsJsonAsync(url, request).Result, "put", url, request,
+            return ExecuteWithTryCatch<T>(client => client.PutAsJsonAsync(url, request).Result, "put", url, request,
                 userContext, headers);
         }
 
-        protected ResponseModel RestGet<T>(string url, UserContext userContext, Dictionary<string, string> headers)
+        protected ResponseSerializationModel<T> RestGet<T>(string url, UserContext userContext,
+            Dictionary<string, string> headers) where T : class
         {
-            return ExecuteWithTryCatch(client => client.GetAsync(url).Result, "get", url, null, userContext, headers);
+            return ExecuteWithTryCatch<T>(client => client.GetAsync(url).Result, "get", url, null, userContext, headers);
         }
 
-        protected ResponseModel RestDelete<T>(string url, UserContext userContext, Dictionary<string, string> headers)
+        protected ResponseSerializationModel<T> RestDelete<T>(string url, UserContext userContext,
+            Dictionary<string, string> headers) where T : class
         {
-            return ExecuteWithTryCatch(client => client.DeleteAsync(url).Result, "delete", url, null, userContext,
+            return ExecuteWithTryCatch<T>(client => client.DeleteAsync(url).Result, "delete", url, null, userContext,
                 headers);
         }
 

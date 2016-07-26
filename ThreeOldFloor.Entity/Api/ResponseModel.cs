@@ -19,5 +19,23 @@
         /// 返回的数据实体
         /// </summary>
         public object Data { get; set; }
-    } 
+    }
+
+    public class ResponseSerializationModel<T> where T : class
+    {
+        /// <summary>
+        /// 错误代码
+        /// </summary>
+        public int Code { get; set; }
+
+        /// <summary>
+        /// 错误信息
+        /// </summary>
+        public string Message { get; set; }
+
+        /// <summary>
+        /// 返回的数据实体
+        /// </summary>
+        public T Data { get; set; }
+    }
 }
