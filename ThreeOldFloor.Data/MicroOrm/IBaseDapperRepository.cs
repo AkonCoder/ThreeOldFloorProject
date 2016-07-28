@@ -15,6 +15,8 @@ namespace ThreeOldFloor.Data.MicroOrm
 
         TEntity Find(Expression<Func<TEntity, bool>> expression);
 
+        TEntity Find<T>(Expression<Func<TEntity, bool>> predicate, TEntity entity, Expression<Func<T, dynamic>> fields);
+
         TEntity Find(Expression<Func<TEntity, bool>> expression, List<Expression<Func<TEntity, object>>> selectColumns);
 
 
@@ -64,6 +66,7 @@ namespace ThreeOldFloor.Data.MicroOrm
 
         bool Update(TEntity instance);
 
+        bool Update<T>(TEntity instance, Expression<Func<T, dynamic>> fields);
 
         IEnumerable<TEntity> FindAllBetween(object from, object to, Expression<Func<TEntity, object>> btwField);
 

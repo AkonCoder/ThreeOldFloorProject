@@ -107,7 +107,7 @@ namespace ThreeOldFloor.Data.MicroOrm.SqlGenerator
 
         private string GetPropertyValue(TEntity entity, PropertyInfo property)
         {
-            if (property.PropertyType == typeof(String) || property.PropertyType == typeof(DateTime?))
+            if (property.PropertyType == typeof (String) || property.PropertyType == typeof (DateTime?))
             {
                 return string.Format("'{0}'", property.GetValue(entity));
             }
@@ -185,6 +185,36 @@ namespace ThreeOldFloor.Data.MicroOrm.SqlGenerator
             return new SqlQuery(sqlBuilder.ToString().TrimEnd(), entity);
         }
 
+        public SqlQuery GetUpdate<T>(TEntity entity, Expression<Func<T, dynamic>> fields)
+        {
+            var targetProperties = GetPropertyInfos(fields);
+            var targetPropertyNames = new List<string>();
+            if (targetProperties != null && targetProperties.Any())
+            {
+                targetPropertyNames = targetProperties.Select(p => p.Name).ToList();
+            }
+
+            var properties =
+                this.BaseProperties.Where(
+                    p => !this.KeyProperties.Any(k => k.Name.Equals(p.Name, StringComparison.OrdinalIgnoreCase)));
+
+            if (targetPropertyNames.Any())
+            {
+                properties = properties.Where(p => targetPropertyNames.Contains(p.Name));
+            }
+
+            var sqlBuilder = new StringBuilder();
+            sqlBuilder.AppendFormat("UPDATE {0} SET {1} WHERE {2}", this.TableName,
+                string.Join(", ",
+                    properties.Select(
+                        p => string.Format("{0}={1}", p.ColumnName, GetPropertyValue(entity, p.PropertyInfo) ?? "NULL"))),
+                string.Join(" AND ",
+                    this.KeyProperties.Select(
+                        p => string.Format("{0}={1}", p.ColumnName, GetPropertyValue(entity, p.PropertyInfo) ?? "NULL"))));
+
+            return new SqlQuery(sqlBuilder.ToString().TrimEnd(), entity);
+        }
+
         #region Get Select
 
         public virtual SqlQuery GetSelectFirst(Expression<Func<TEntity, bool>> predicate,
@@ -197,6 +227,62 @@ namespace ThreeOldFloor.Data.MicroOrm.SqlGenerator
             List<Expression<Func<TEntity, object>>> selectColumns, params Expression<Func<TEntity, object>>[] includes)
         {
             return GetSelect(predicate, true, selectColumns, includes);
+        }
+
+        public SqlQuery GetSelectFirst<T>(Expression<Func<TEntity, bool>> predicate, TEntity entity,
+            Expression<Func<T, dynamic>> fields)
+        {
+            var targetProperties = GetPropertyInfos(fields);
+            var targetPropertyNames = new List<string>();
+            if (targetProperties != null && targetProperties.Any())
+            {
+                targetPropertyNames = targetProperties.Select(p => p.Name).ToList();
+            }
+
+            if (!targetPropertyNames.Any()) return new SqlQuery(null, entity);
+            var properties = BaseProperties.Where(p => targetPropertyNames.Contains(p.Name));
+            var sqlBuilder = new StringBuilder();
+            sqlBuilder.AppendFormat("SELECT {0} FROM {1}  ",
+                string.Join(" , ", properties.Select(p => p.ColumnName)), this.TableName);
+
+            IDictionary<string, object> expando = new ExpandoObject();
+
+            if (predicate != null)
+            {
+                // WHERE
+                var queryProperties = new List<QueryParameter>();
+                FillQueryProperties(ExpressionHelper.GetBinaryExpression(predicate.Body), ExpressionType.Default,
+                    ref queryProperties);
+
+                sqlBuilder.Append(" WHERE ");
+
+
+                for (int i = 0; i < queryProperties.Count; i++)
+                {
+                    var item = queryProperties[i];
+                    if (!string.IsNullOrEmpty(item.LinkingOperator) && i > 0)
+                    {
+                        sqlBuilder.Append(string.Format("{0} {1}.{2} {3} {4} ", item.LinkingOperator, TableName,
+                            item.PropertyName, GetPropertyValue(item) == null ? "is  " : item.QueryOperator,
+                            GetPropertyValue(item) ?? "NULL"));
+                    }
+                    else
+                    {
+                        sqlBuilder.Append(string.Format("{0}.{1} {2} {3} ", TableName, item.PropertyName,
+                            GetPropertyValue(item) == null ? "is " : item.QueryOperator,
+                            GetPropertyValue(item) ?? "NULL"));
+                    }
+
+                    expando[item.PropertyName] = item.PropertyValue;
+                }
+            }
+
+            if (
+                (SqlConnector == ThreeOldFloor.Data.MicroOrm.SqlGenerator.ESqlConnector.MySQL ||
+                 SqlConnector == ThreeOldFloor.Data.MicroOrm.SqlGenerator.ESqlConnector.PostgreSQL))
+                sqlBuilder.Append("LIMIT 1");
+
+            return new SqlQuery(sqlBuilder.ToString().TrimEnd(), expando);
         }
 
 
@@ -391,7 +477,9 @@ namespace ThreeOldFloor.Data.MicroOrm.SqlGenerator
                 sqlBuilder.AppendFormat("DELETE FROM {0} WHERE {1}", this.TableName,
                     string.Join(" AND ",
                         this.KeyProperties.Select(
-                            p => string.Format("{0} = {1}", p.ColumnName, GetPropertyValue(entity, p.PropertyInfo)??"NULL"))));
+                            p =>
+                                string.Format("{0} = {1}", p.ColumnName,
+                                    GetPropertyValue(entity, p.PropertyInfo) ?? "NULL"))));
             }
             else
             {
@@ -399,7 +487,9 @@ namespace ThreeOldFloor.Data.MicroOrm.SqlGenerator
                     string.Format("{0}={1}", StatusProperty.ColumnName, LogicalDeleteValue),
                     string.Join(" AND ",
                         this.KeyProperties.Select(
-                            p => string.Format("{0}={1}", p.ColumnName, GetPropertyValue(entity, p.PropertyInfo)??"NULL"))));
+                            p =>
+                                string.Format("{0}={1}", p.ColumnName,
+                                    GetPropertyValue(entity, p.PropertyInfo) ?? "NULL"))));
             }
 
             return new SqlQuery(sqlBuilder.ToString(), entity);
@@ -431,6 +521,20 @@ namespace ThreeOldFloor.Data.MicroOrm.SqlGenerator
                 FillQueryProperties(ExpressionHelper.GetBinaryExpression(body.Left), body.NodeType, ref queryProperties);
                 FillQueryProperties(ExpressionHelper.GetBinaryExpression(body.Right), body.NodeType, ref queryProperties);
             }
+        }
+
+        private static PropertyInfo[] GetPropertyInfos<T>(Expression<Func<T, dynamic>> select)
+        {
+            var body = select.Body;
+            if (body.NodeType == ExpressionType.Parameter)
+            {
+                return (body as ParameterExpression).Type.GetProperties();
+            }
+            else if (body.NodeType == ExpressionType.New)
+            {
+                return (body as NewExpression).Members.Select(m => m as PropertyInfo).ToArray();
+            }
+            return null;
         }
     }
 }

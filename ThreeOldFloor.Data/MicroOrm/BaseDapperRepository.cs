@@ -50,6 +50,12 @@ namespace ThreeOldFloor.Data.MicroOrm
             return FindAll(queryResult).FirstOrDefault();
         }
 
+        public TEntity Find<T>(Expression<Func<TEntity, bool>> predicate, TEntity entity, Expression<Func<T, dynamic>> fields)
+        {
+            var queryResult = SqlGenerator.GetSelectFirst<T>(predicate, entity, fields);
+            return FindAll(queryResult).FirstOrDefault();
+        }
+
         public virtual TEntity Find<TChild1>(Expression<Func<TEntity, bool>> expression,
             Expression<Func<TEntity, object>> tChild1)
         {
@@ -315,6 +321,13 @@ namespace ThreeOldFloor.Data.MicroOrm
         public virtual bool Update(TEntity instance)
         {
             var query = SqlGenerator.GetUpdate(instance);
+            var updated = Connection.Execute(query.Sql, instance) > 0;
+            return updated;
+        }
+
+        public virtual bool Update<T>(TEntity instance, Expression<Func<T, dynamic>> fields)
+        {
+            var query = SqlGenerator.GetUpdate(instance, fields);
             var updated = Connection.Execute(query.Sql, instance) > 0;
             return updated;
         }

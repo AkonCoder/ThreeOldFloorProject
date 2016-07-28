@@ -31,6 +31,8 @@ namespace ThreeOldFloor.Data.MicroOrm.SqlGenerator
         SqlQuery GetSelectFirst(Expression<Func<TEntity, bool>> predicate,
             List<Expression<Func<TEntity, object>>> selectColumns, params Expression<Func<TEntity, object>>[] includes);
 
+        SqlQuery GetSelectFirst<T>(Expression<Func<TEntity, bool>> predicate, TEntity entity, Expression<Func<T, dynamic>> fields);
+
         SqlQuery GetSelectAll(Expression<Func<TEntity, bool>> predicate,
             List<Expression<Func<TEntity, object>>> selectColumns, params Expression<Func<TEntity, object>>[] includes);
 
@@ -46,6 +48,7 @@ namespace ThreeOldFloor.Data.MicroOrm.SqlGenerator
         SqlQuery GetInsert(TEntity entity);
 
         SqlQuery GetUpdate(TEntity entity);
+        SqlQuery GetUpdate<T>(TEntity entity, Expression<Func<T, dynamic>> fields);
 
         SqlQuery GetDelete(TEntity entity);
     }
