@@ -3,10 +3,11 @@
 namespace ThreeOldFloor.Controllers
 {
     /// <summary>
-    /// 公共模块接口
+    /// 角色相关接口
     /// </summary>
     [RoutePrefix("v0")]
-    public class SharedController
+    public class RoleController : ApiController
     {
+
     }
 }

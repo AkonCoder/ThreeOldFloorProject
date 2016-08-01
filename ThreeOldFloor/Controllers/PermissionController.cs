@@ -3,10 +3,10 @@
 namespace ThreeOldFloor.Controllers
 {
     /// <summary>
-    /// 公共模块接口
+    /// 操作相关接口（Add/Update/Delete）
     /// </summary>
     [RoutePrefix("v0")]
-    public class SharedController
+    public class PermissionController : ApiController
     {
     }
 }

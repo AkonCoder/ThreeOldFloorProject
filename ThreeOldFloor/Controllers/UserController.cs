@@ -4,10 +4,10 @@ using ThreeOldFloor.Entity.Api;
 namespace ThreeOldFloor.Controllers
 {
     /// <summary>
-    /// 用户信息相关接口
+    /// 用户相关接口
     /// </summary>
     [RoutePrefix("v0")]
-    public class UserInfoController
+    public class UserController
     {
         /// <summary>
         /// 获取所有用户列表
