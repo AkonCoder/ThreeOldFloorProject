@@ -49,7 +49,7 @@
     <Compile Include="Api\PaginationResultBase.cs" />
     <Compile Include="Api\RequestModel.cs" />
     <Compile Include="Api\ResponseModel.cs" />
-    <Compile Include="Api\User.cs" />
+    <Compile Include="Model\User\User.cs" />
     <Compile Include="Api\UserContext.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Dto\Settings\LoggerSettings.cs" />

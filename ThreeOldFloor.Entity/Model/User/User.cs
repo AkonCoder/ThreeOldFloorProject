@@ -13,6 +13,8 @@ namespace ThreeOldFloor.Entity.Api
         /// <summary>
         /// 用户Id
         /// </summary>
+        [Key]
+        [Identity]
         public int Id { get; set; }
 
         /// <summary>
