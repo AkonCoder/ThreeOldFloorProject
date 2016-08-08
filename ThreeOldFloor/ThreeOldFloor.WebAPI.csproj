@@ -267,6 +267,10 @@
       <Project>{AE156BFC-96CA-4141-ADE9-2CC8BE461AE5}</Project>
       <Name>ThreeOldFloor.WebAPIFramework</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ThreeOldFloorApplication\ThreeOldFloor.Application.csproj">
+      <Project>{cd96b878-b0f3-4de5-a3ff-c05aa29822fc}</Project>
+      <Name>ThreeOldFloor.Application</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

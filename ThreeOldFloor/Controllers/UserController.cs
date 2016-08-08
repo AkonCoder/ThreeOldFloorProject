@@ -1,6 +1,6 @@
 ﻿using System.Web.Http;
 using ThreeOldFloor.Entity.Api;
-
+using ThreeOldFloorApplication.Users;
 namespace ThreeOldFloor.Controllers
 {
     /// <summary>
@@ -9,6 +9,12 @@ namespace ThreeOldFloor.Controllers
     [RoutePrefix("v0")]
     public class UserController
     {
+        private readonly IUserService _userService;
+
+        public UserController()
+        {
+            _userService = new UserService();
+        }
         /// <summary>
         /// 获取所有用户列表
         /// </summary>
